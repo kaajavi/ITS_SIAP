@@ -1,38 +1,54 @@
-class LineSiap():
-    def __init__(self):
-        blanco=""
-        self._01_caracter=0
-        self._02_tipoDni="96"
-        self._03_dni="".ljust(20)    #-usar  ljust(20)
-        self._04_nombre="".ljust(30)    #-usar  ljust(30)
-        self._05_calle="".ljust(30)    #-usar  ljust(30)
-        self._06_num="".ljust(6)    #-usar  ljust(6)
-        self._07_piso=blanco.ljust(5)
-        self._08_oficina=blanco.ljust(5)
-        self._09_sector=blanco.ljust(5)
-        self._10_torre=blanco.ljust(5)
-        self._11_manzana=blanco.ljust(5)
-        self._12_cp="5000".ljust(8)
-        self._13_localidad="CORDOBA".ljust(30)
-        self._14_partido="CAPITAL".ljust(50)
-        self._15_provincia="00" #BUSCAR CUAL ES EL DE CORDOBA
-        #LO SIGUIENTE SE COPIA AL NOMBRE Y DNI PRINCIPAL SEGUN CODIGO
-        self._16_nomMadre="".ljust(30) #-usar  ljust(30)
-        self._17_tipoDniMadre="".ljust(20) #-usar  ljust(2)
-        self._18_dniMadre="".ljust(2) #-usar  ljust(20)
-        self._19_nomPadre="".ljust(30) #-usar  ljust(30)
-        self._20_tipoDniPadre="".ljust(2) #-usar  ljust(2)
-        self._21_dniPadre="".ljust(20) #-usar  ljust(20)
-        self._22_importeAdeudado="00000000000"
+import xlrd
+import lineSiap
 
-    def getLine(self):
-        ret = ""
-        mydict=self.__dict__
-        for key in sorted(mydict.iterkeys()):
-            ret= ret + str(mydict[key])
-        return ret
+def getArrayCoutasAlumnos():
+    workbook = xlrd.open_workbook('cobro.xls')
+    worksheet = workbook.sheet_by_name('archivocobro')
+    notEnd = True
+    curr_row=-1
+    colLegajo=10
+    colNombre=12
+    colRecibo=20
+    colMonto=30
+    vector=[]
+    while notEnd:    
+        curr_row += 1
+        alumno = {}
+        try:
+            #Veo si no esta vacia
+            if worksheet.cell_type(curr_row, colLegajo) > 0:
+                alumno['legajo'] = worksheet.cell_value(curr_row, colLegajo)
+                alumno['nombre'] = worksheet.cell_value(curr_row, colNombre)
+                alumno['recibo'] = worksheet.cell_value(curr_row, colRecibo).split('-')[1]
+                alumno['monto'] = worksheet.cell_value(curr_row, colMonto)
+                vector.append(alumno)
+        except:
+            notEnd=False
+    return vector
 
-line=LineSiap()
-print line.getLine()
-print len(line.getLine())
+def getArrayAlumnos():
+    workbook = xlrd.open_workbook('alumnos.xls')
+    worksheet = workbook.sheet_by_name('archivocobro')
+    notEnd = True
+    curr_row=-1
+    colLegajo=10
+    colNombre=12
+    colRecibo=20
+    colMonto=30
+    vector=[]
+    while notEnd:    
+        curr_row += 1
+        alumno = {}
+        try:
+            #Veo si no esta vacia
+            if worksheet.cell_type(curr_row, colLegajo) > 0:
+                alumno['legajo'] = worksheet.cell_value(curr_row, colLegajo)
+                alumno['nombre'] = worksheet.cell_value(curr_row, colNombre)
+                alumno['recibo'] = worksheet.cell_value(curr_row, colRecibo).split('-')[1]
+                alumno['monto'] = worksheet.cell_value(curr_row, colMonto)
+                vector.append(alumno)
+        except:
+            notEnd=False
+    return vector
 
+print len(getArrayCoutasAlumnos())
